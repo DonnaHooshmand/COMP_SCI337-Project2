@@ -17,12 +17,20 @@ functions we need
 ## Possibly might change get_ingredients and get_directions to take in the flag and do substitutions inside the function
 
 def get_cuisine_type(soup_blob):
-	name = soup_blob.find_all("child")
-	print(name)
-
-def get_ingredients(soup_blob):
-	#print(soup_blob.prettify())
+	# name = soup_blob.find_all('script')
+	# print(name)
 	pass
+	
+def get_ingredients(soup_blob):
+	## based on patterns, ingredients will be in the following format:
+		## < li class = "ingredients-item" ...> 
+	## so we can just extract items that match the following class. 
+	ingredients = []
+	pattern_match = soup_blob.find_all("li", "ingredients-item")
+	for ingredient in pattern_match:
+		ingredients.append(ingredient.text)
+	print(ingredients)
+	return ingredients
 
 def get_methods_and_tools(soup_blob):
 	pass
@@ -47,6 +55,7 @@ def main():
 		## get inredients
 		get_ingredients(soup)
 
+		get_cuisine_type(soup)
 		if flag != "N/A":
 			##get cuisine type
 			cuisine_type = get_cuisine_type(soup)
