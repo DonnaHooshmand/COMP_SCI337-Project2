@@ -28,7 +28,7 @@ def get_ingredients(soup_blob):
 	ingredients = []
 	pattern_match = soup_blob.find_all("li", "ingredients-item")
 	for ingredient in pattern_match:
-		ingredients.append(ingredient.text)
+		ingredients.append(ingredient.text.strip())
 	print(ingredients)
 	return ingredients
 
