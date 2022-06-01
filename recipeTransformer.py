@@ -29,14 +29,20 @@ def get_ingredients(soup_blob):
 	pattern_match = soup_blob.find_all("li", "ingredients-item")
 	for ingredient in pattern_match:
 		ingredients.append(ingredient.text.strip())
-	print(ingredients)
 	return ingredients
 
 def get_methods_and_tools(soup_blob):
 	pass
 
 def get_directions(soup_blob):
-	pass
+	## based on patterns, directions will be in the following format:
+		## <li class="subcontainer instructions-section-item" ... >
+	## so we can just extract items that match the following class. 
+	directions = []
+	pattern_match = soup_blob.find_all("li", "subcontainer instructions-section-item")
+	for step in pattern_match:
+		directions.append(step.text.strip())
+	return directions
 
 def transform(data_struct):
 	pass
@@ -48,12 +54,17 @@ def main():
 	url = input("Please enter the URL for the recipe you want to transform: ")
 	get_req = requests.get(url)
 	soup = BeautifulSoup(get_req.content,'html.parser')
+	#print(soup.prettify())
+
 	## Check URL
 	if soup: 
 		flag = input("If you'd like to transform this recipe please describe your transformation in the following format: from --> to, otherwise type N/A: ")
 		
 		## get inredients
-		get_ingredients(soup)
+		ingredient_list = get_ingredients(soup)
+
+		## get directions
+		direction_list = get_directions(soup)
 
 		get_cuisine_type(soup)
 		if flag != "N/A":
