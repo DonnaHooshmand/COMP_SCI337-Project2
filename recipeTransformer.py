@@ -1,5 +1,6 @@
 import requests 
 from bs4 import BeautifulSoup
+import json
 
 ''' 
 functions we need 
@@ -47,6 +48,31 @@ def get_directions(soup_blob):
 def transform(data_struct):
 	pass
 
+def get_recipe_json(soup_blob):
+	recipe_chunk = json.loads(soup_blob.find("script", type="application/ld+json").text)[1]
+	print('='*30, '\nAn overview :)\n', '='*30)
+	for k, info in recipe_chunk.items():
+		if k in ['prepTime', 'cookTime', 'totalTime', 'recipeYield', 'recipeCategory', 'recipeCuisine']:
+			print(k + ':', info)
+	print('=' * 30, '\nIngredients :)\n', '=' * 30)
+	for k, info in recipe_chunk.items():
+		if k in ['recipeIngredient']:
+			for ix, step in enumerate(info):
+				print('\t-', step)
+	print('=' * 30, '\nInstructions :)\n', '=' * 30)
+	for k, info in recipe_chunk.items():
+		if k in ['recipeInstructions']:
+			for ix, step in enumerate(info):
+				print('\t' + str(ix + 1) + '. ', step['text'])
+	print('=' * 30, '\nNutrition :)\n', '=' * 30)
+	for k, info in recipe_chunk.items():
+		if k in ['nutrition']:
+			for tag, value in info.items():
+				print('\t', tag + ':', value)
+
+	return recipe_chunk
+
+
 def main():
 	print("--------------------------------------------------")
 	print("This recipe transformer only accepts recipes from AllRecipes.com")
@@ -71,7 +97,7 @@ def main():
 			##get cuisine type
 			cuisine_type = get_cuisine_type(soup)
 			
-		
+		get_recipe_json(soup)
 
 
 
