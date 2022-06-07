@@ -4,6 +4,26 @@ from bs4 import BeautifulSoup
 import json
 import copy
 
+class Ingredient:
+	base_ingredient = "None"
+	unit = "None"
+	quantity = 0
+
+	def __init__(self, b, u, q):
+		self.base_ingredient = b
+		self.unit = u
+		self.quantity = q
+	
+	def pprint(self):
+		print("\n\n~ Printing ingredient ~")
+		print("="*30)
+		print("Base ingredient: ", self.base_ingredient)
+		print("="*30)
+		print("Unit: ", self.unit)
+		print("="*30)
+		print("Quantity: ", self.quantity)
+		print("\n\n")
+
 ''' 
 functions we need 
 	1. get ingredients 
@@ -31,9 +51,6 @@ class recipe():
 		self.recipeYield = recipeYield
 		self.recipeCategory = recipeCategory # 0 or 1 element list
 		self.recipeCuisine = recipeCuisine # 0 or 1 element list
-	
-	def printDiv():
-		print("="*30)
 
 	def pprint(self):
 		print("~ Printing recipe ~")
@@ -104,6 +121,12 @@ def get_cuisine_type(soup_blob):
 	# name = soup_blob.find_all('script')
 	# print(name)
 	pass
+
+def try_convert_to_float(str):
+	try:
+		return float(str)
+	except:
+		return 1
 	
 def get_ingredients(soup_blob):
 	## based on patterns, ingredients will be in the following format:
@@ -113,11 +136,13 @@ def get_ingredients(soup_blob):
 	pattern_match = soup_blob.find_all("li", "ingredients-item")
 	for ingredient in pattern_match:
 
-		print("base ingredient: ", ingredient.input["data-ingredient"])
-		print("unit: ", ingredient.input["data-unit"])
-		print("quantity: ", ingredient.input["data-init-quantity"])
-		print("\n\n")
-		ingredients.append(ingredient.text.strip())
+		# print("base ingredient: ", ingredient.input["data-ingredient"])
+		# print("unit: ", ingredient.input["data-unit"])
+		# print("quantity: ", ingredient.input["data-init-quantity"])
+
+		ingred_obj = Ingredient(ingredient.input["data-ingredient"], \
+											ingredient.input["data-unit"], try_convert_to_float(ingredient.input["data-init-quantity"]))
+		ingredients.append(ingred_obj)
 	return ingredients
 
 def get_methods_and_tools(soup_blob):
@@ -237,6 +262,7 @@ def main():
 			jsonRecipe = get_recipe_json(soup)
 			lasagna = recipeFromJson(jsonRecipe)
 			print("Created recipe object successfully. Printing now:")
+			print(type(lasagna))
 			lasagna.pprint()
 
 			vegetarianLasagna = transform(lasagna, "->veg")
@@ -280,7 +306,9 @@ def main():
 			## get inredients
 			ingredient_list = get_ingredients(soup)
 			print("gathered ingredients:")
-			print(ingredient_list)
+			print("new ingredient list. does it print?")
+			[x.pprint() for x in ingredient_list]
+			# print(ingredient_list)
 
 			## get directions
 			direction_list = get_directions(soup)
