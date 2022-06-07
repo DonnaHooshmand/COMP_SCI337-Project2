@@ -37,7 +37,7 @@ functions we need
 	3. output functoin --> human readable format 
 '''
 ## recipe object
-class recipe():
+class Recipe:
 	def __init__(self, title = "Recipe", ingredients = "None", instructions = "None", nutrition = "None", \
 					prepTime = "None", cookTime = "None", totalTime = "None", recipeYield = "None", recipeCategory = "None", \
 					recipeCuisine = "None"):
@@ -111,7 +111,7 @@ def recipeFromJson(jsonObj):
 				if tag and value and tag != "@type":
 					nutrition[tag] = value
 
-	return recipe(title = title, ingredients = ingredients, instructions=instructions, prepTime=prepTime, cookTime=cookTime,\
+	return Recipe(title = title, ingredients = ingredients, instructions=instructions, prepTime=prepTime, cookTime=cookTime,\
 				totalTime=totalTime, recipeYield=recipeYield, recipeCategory=recipeCategory, recipeCuisine=recipeCuisine, nutrition=nutrition)
 
 
@@ -308,7 +308,6 @@ def main():
 			print("gathered ingredients:")
 			print("new ingredient list. does it print?")
 			[x.pprint() for x in ingredient_list]
-			# print(ingredient_list)
 
 			## get directions
 			direction_list = get_directions(soup)
