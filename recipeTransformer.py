@@ -112,6 +112,11 @@ def get_ingredients(soup_blob):
 	ingredients = []
 	pattern_match = soup_blob.find_all("li", "ingredients-item")
 	for ingredient in pattern_match:
+
+		print("base ingredient: ", ingredient.input["data-ingredient"])
+		print("unit: ", ingredient.input["data-unit"])
+		print("quantity: ", ingredient.input["data-init-quantity"])
+		print("\n\n")
 		ingredients.append(ingredient.text.strip())
 	return ingredients
 
