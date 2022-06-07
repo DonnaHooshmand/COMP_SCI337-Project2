@@ -131,14 +131,11 @@ def try_convert_to_float(str):
 def get_ingredients(soup_blob):
 	## based on patterns, ingredients will be in the following format:
 		## < li class = "ingredients-item" ...> 
-	## so we can just extract items that match the following class. 
+	## so we can just extract items that match the following class.
+	# also extracts the base ingredient, unit, and quantity. E.g. "1/2 cups of olive oil" is parsed to olive oil, cup, and 0.5 
 	ingredients = []
 	pattern_match = soup_blob.find_all("li", "ingredients-item")
 	for ingredient in pattern_match:
-
-		# print("base ingredient: ", ingredient.input["data-ingredient"])
-		# print("unit: ", ingredient.input["data-unit"])
-		# print("quantity: ", ingredient.input["data-init-quantity"])
 
 		ingred_obj = Ingredient(ingredient.input["data-ingredient"], \
 											ingredient.input["data-unit"], try_convert_to_float(ingredient.input["data-init-quantity"]))
