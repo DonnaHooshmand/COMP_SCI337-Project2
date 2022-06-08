@@ -165,6 +165,15 @@ def halve(recipeObj):
 	return newRecipe
 
 
+def double(recipeObj):
+	print("HALVING THIS RECIPE")
+	newRecipe = copy.deepcopy(recipeObj)
+	for i, ingredient in enumerate(newRecipe.ingredients):
+		newRecipe.ingredients[i].quantity = ingredient.quantity * 2
+	
+	return newRecipe
+
+
 def toVeg(recipeObj):
 	f = open("veggieSubs.json")
 	substitutions = json.load(f)
@@ -227,6 +236,8 @@ def transform(recipeObj, transformation):
 		return toUnhealthy(recipeObj)
 	elif transformation == "->halve":
 		return halve(recipeObj)
+	elif transformation == "->double":
+		return double(recipeObj)
 
 def get_recipe_json(soup_blob):
 	recipe_chunk = json.loads(soup_blob.find("script", type="application/ld+json").text)[1]
@@ -310,7 +321,7 @@ def main():
 
 		## Check URL
 		if soup: 
-			flag = input("If you'd like to transform this recipe please describe your transformation from the following options: '->veg', '->nonVeg', '->healthy', '->halve'; otherwise type N/A: ")
+			flag = input("If you'd like to transform this recipe please describe your transformation from the following options: '->veg', '->nonVeg', '->healthy', '->halve', '->double'; otherwise type N/A: ")
 
 			## get inredients
 			ingredient_list = get_ingredients(soup)
