@@ -72,14 +72,14 @@ class Recipe:
 		print("="*30)
 		print("Ingredients:")
 		for ingredient in self.ingredients:
-			print("\t-" + ingredient)
+			ingredient.pprint()
 		print("="*30)
 		print("Instructions:")
 		for i, step in enumerate(self.instructions):
 			print("\t"+str(i)+" . "+step)
 		print("="*30)
 
-def recipeFromJson(jsonObj):
+def recipeFromJson(jsonObj, soup):
 	# print("PRINTING TOTAL RECIPE CHUNK")
 	# print(jsonObj)
 	print("DIVIDING INTO SECTIONS")
@@ -101,8 +101,9 @@ def recipeFromJson(jsonObj):
 		elif k == 'recipeCuisine':
 			recipeCuisine = info
 		elif k == 'recipeIngredient': # list
-			for ix, step in enumerate(info):
-				ingredients.append(step)
+			ingredients = get_ingredients(soup)
+			# for ix, step in enumerate(info):
+			# 	ingredients.append(step)
 		elif k == 'recipeInstructions': # list
 			for ix, step in enumerate(info):
 				instructions.append(step['text'])
@@ -126,7 +127,7 @@ def try_convert_to_float(str):
 	try:
 		return float(str)
 	except:
-		return 1
+		return 0
 	
 def get_ingredients(soup_blob):
 	## based on patterns, ingredients will be in the following format:
@@ -154,6 +155,15 @@ def get_directions(soup_blob):
 	for step in pattern_match:
 		directions.append(step.text.strip())
 	return directions
+
+def halve(recipeObj):
+	print("HALVING THIS RECIPE")
+	newRecipe = copy.deepcopy(recipeObj)
+	for i, ingredient in enumerate(newRecipe.ingredients):
+		newRecipe.ingredients[i].quantity = ingredient.quantity / 2
+	
+	return newRecipe
+
 
 def toVeg(recipeObj):
 	f = open("veggieSubs.json")
@@ -215,6 +225,8 @@ def transform(recipeObj, transformation):
 		return toHealthy(recipeObj)
 	elif transformation == "->unhealthy":
 		return toUnhealthy(recipeObj)
+	elif transformation == "->halve":
+		return halve(recipeObj)
 
 def get_recipe_json(soup_blob):
 	recipe_chunk = json.loads(soup_blob.find("script", type="application/ld+json").text)[1]
@@ -257,7 +269,7 @@ def main():
 		if soup:
 			
 			jsonRecipe = get_recipe_json(soup)
-			lasagna = recipeFromJson(jsonRecipe)
+			lasagna = recipeFromJson(jsonRecipe, soup)
 			print("Created recipe object successfully. Printing now:")
 			print(type(lasagna))
 			lasagna.pprint()
@@ -278,7 +290,7 @@ def main():
 		if soup:
 			
 			jsonRecipe = get_recipe_json(soup)
-			padThai = recipeFromJson(jsonRecipe)
+			padThai = recipeFromJson(jsonRecipe, soup)
 			print("Created recipe object successfully. Printing now:")
 			padThai.pprint()
 
@@ -298,12 +310,11 @@ def main():
 
 		## Check URL
 		if soup: 
-			flag = input("If you'd like to transform this recipe please describe your transformation in the following format: from --> to, otherwise type N/A: ")
+			flag = input("If you'd like to transform this recipe please describe your transformation from the following options: '->veg', '->nonVeg', '->healthy', '->halve'; otherwise type N/A: ")
 
 			## get inredients
 			ingredient_list = get_ingredients(soup)
 			print("gathered ingredients:")
-			print("new ingredient list. does it print?")
 			[x.pprint() for x in ingredient_list]
 
 			## get directions
@@ -317,13 +328,13 @@ def main():
 				cuisine_type = get_cuisine_type(soup)
 				
 			jsonRecipe = get_recipe_json(soup)
-			lasagna = recipeFromJson(jsonRecipe)
+			recipe_obj = recipeFromJson(jsonRecipe, soup)
 			print("Created recipe object successfully. Printing now:")
-			lasagna.pprint()
+			recipe_obj.pprint()
 
-			vegetarianLasagna = transform(lasagna, "->veg")
+			transformed_recipe_obj = transform(recipe_obj, flag)
 			print("Recipe transformed, printing revised copy:")
-			vegetarianLasagna.pprint()
+			transformed_recipe_obj.pprint()
 
 
 
