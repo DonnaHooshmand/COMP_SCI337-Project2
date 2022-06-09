@@ -210,8 +210,8 @@ def toVeg(recipeObj):
 	# transform ingredients
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		for sub in substitutions.keys():
-			if sub in ingredient:
-				newRecipe.ingredients[i] = ingredient.replace(sub, substitutions[sub])
+			if sub in ingredient.base_ingredient:
+				newRecipe.ingredients[i].base_ingredient = ingredient.base_ingredient.replace(sub, substitutions[sub])
 
 	# transform instructions
 	for i, instruction in enumerate(newRecipe.instructions):
@@ -234,8 +234,8 @@ def toNonVeg(recipeObj):
 	# transform ingredients
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		for sub in substitutions.keys():
-			if sub in ingredient:
-				newRecipe.ingredients[i] = ingredient.replace(sub, substitutions[sub])
+			if sub in ingredient.base_ingredient:
+				newRecipe.ingredients[i].base_ingredient = ingredient.base_ingredient.replace(sub, substitutions[sub])
 
 	# transform instructions
 	for i, instruction in enumerate(newRecipe.instructions):
