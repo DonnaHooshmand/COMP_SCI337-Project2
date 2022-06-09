@@ -24,23 +24,12 @@ class Ingredient:
 		print("Quantity: ", self.quantity)
 		print("\n\n")
 
-''' 
-functions we need 
-	1. get ingredients 
-		a. flags for non vegetarian, vegetarian, healthy, unhealthy
-		b. transforming functions (from one flag to another)
-				non-vegetarian <--> vegetarian 
-				unhealthy <--> healthy
-				* change one style of cuisine
-				[some optionals]
-	2. get directions
-	3. output functoin --> human readable format 
-'''
+
 ## recipe object
 class Recipe:
 	def __init__(self, title = "Recipe", ingredients = "None", instructions = "None", nutrition = "None", \
 					prepTime = "None", cookTime = "None", totalTime = "None", recipeYield = "None", recipeCategory = "None", \
-					recipeCuisine = "None"):
+					recipeCuisine = "None", recipeTools = "None", recipeMethods = "None"):
 		self.title = title
 		self.ingredients = ingredients # list
 		self.instructions = instructions # list
@@ -51,6 +40,8 @@ class Recipe:
 		self.recipeYield = recipeYield
 		self.recipeCategory = recipeCategory # 0 or 1 element list
 		self.recipeCuisine = recipeCuisine # 0 or 1 element list
+		self.recipeTools = recipeTools
+		self.recipeMethods = recipeMethods
 
 	def pprint(self):
 		print("~ Printing recipe ~")
@@ -78,6 +69,15 @@ class Recipe:
 		for i, step in enumerate(self.instructions):
 			print("\t"+str(i)+" . "+step)
 		print("="*30)
+		print("Methods:")
+		for i in self.recipeMethods:
+			print(i)
+		print("="*30)
+		print("Tools:")
+		for i in self.recipeTools:
+			print(i)
+		print("="*30)
+
 
 def recipeFromJson(jsonObj, soup):
 	# print("PRINTING TOTAL RECIPE CHUNK")
@@ -143,8 +143,34 @@ def get_ingredients(soup_blob):
 		ingredients.append(ingred_obj)
 	return ingredients
 
-def get_methods_and_tools(soup_blob):
-	pass
+def get_methods_and_tools(recipeObj):
+	## There are a few ways to do this. 
+		## 1. We could use words such as "heat" as indicators of what might be a tool.
+			## ex: heat frying pan 
+			## but that seems like it might not be great...
+		## 2. (WHAT WE'RE DOING) Use a list and see what is in the directions.
+	## Credit: https://www.cooksmarts.com/cooking-guides/create-a-functional-kitchen/20-must-have-kitchen-tools/
+	tool_list = ['pan', 'wok', 'saucepan', 'pot', 'dish',]
+	tools_found = []
+	for i, instruction in enumerate(recipeObj.instructions):
+		for tool in tool_list:
+			if tool in instruction.strip():
+				if tool not in tools_found:
+					tools_found.append(tool)
+	recipeObj.recipeTools = tools_found
+	## Credit: https://www.unlockfood.ca/en/Articles/Cooking-Food-Preparation/Food-Dictionary--Cooking-Foods-with-Dry-Heat-Methods.aspx
+	method_list = ['grill', 'broil', 'bake', 'roast', 'saute', 'sear', 'braise', 'boil', 'steam', 'poach', 'simmer', 'stew']
+	methods_found = []
+	for i, instruction in enumerate(recipeObj.instructions):
+		for method in method_list:
+			if method in instruction.strip():
+				if method not in methods_found:
+					methods_found.append(method)
+	recipeObj.recipeMethods = methods_found
+	print(" tools: ", tools_found )
+	print(" methods: ", methods_found )
+
+	
 
 def get_directions(soup_blob):
 	## based on patterns, directions will be in the following format:
@@ -281,11 +307,14 @@ def main():
 			
 			jsonRecipe = get_recipe_json(soup)
 			lasagna = recipeFromJson(jsonRecipe, soup)
+			get_methods_and_tools(lasagna)
 			print("Created recipe object successfully. Printing now:")
 			print(type(lasagna))
 			lasagna.pprint()
+			
 
 			vegetarianLasagna = transform(lasagna, "->veg")
+			get_methods_and_tools(vegetarianLasagna)
 			print("Recipe transformed, printing revised copy:")
 			vegetarianLasagna.pprint()
 
@@ -302,10 +331,12 @@ def main():
 			
 			jsonRecipe = get_recipe_json(soup)
 			padThai = recipeFromJson(jsonRecipe, soup)
+			get_methods_and_tools(padThai)
 			print("Created recipe object successfully. Printing now:")
 			padThai.pprint()
 
 			meatPadThai = transform(padThai, "->nonVeg")
+			get_methods_and_tools(meatPadThai)
 			print("Recipe transformed, printing revised copy:")
 			meatPadThai.pprint()
 
