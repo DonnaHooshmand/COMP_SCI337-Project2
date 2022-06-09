@@ -84,6 +84,11 @@ def recipeFromJson(jsonObj, soup):
 	# print(jsonObj)
 	print("DIVIDING INTO SECTIONS")
 	title = jsonObj['name']
+
+	# safe init in case certain recipes' webpages omit information chunks
+	prepTime, cookTime, totalTime, recipeYield, recipeCategory = "None", "None", "None", "None", "None"
+	recipeCuisine, recipeTools, recipeMethods = "None", "None", "None"
+
 	ingredients = []
 	instructions = []
 	nutrition = {}
@@ -112,8 +117,9 @@ def recipeFromJson(jsonObj, soup):
 				if tag and value and tag != "@type":
 					nutrition[tag] = value
 
-	return Recipe(title = title, ingredients = ingredients, instructions=instructions, prepTime=prepTime, cookTime=cookTime,\
-				totalTime=totalTime, recipeYield=recipeYield, recipeCategory=recipeCategory, recipeCuisine=recipeCuisine, nutrition=nutrition)
+	return Recipe(title=title, ingredients=ingredients, instructions=instructions, prepTime=prepTime, cookTime=cookTime,
+				  totalTime=totalTime, recipeYield=recipeYield, recipeCategory=recipeCategory,
+				  recipeCuisine=recipeCuisine, nutrition=nutrition)
 
 
 ## Possibly might change get_ingredients and get_directions to take in the flag and do substitutions inside the function
