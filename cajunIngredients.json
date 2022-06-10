@@ -1,20 +1,10 @@
 {
-	"spices": {
-		"ingredients": {
-			"paprika": 2.5,
-			"salt": 2,
-			"garlic powder": 2,
-			"dried oregano": 1.25,
-			"dried thyme": 1.25,
-			"ground black pepper": 1,
-			"onion powder": 1,
-			"cayenne pepper": 1,
-		},
-		"serves": 12
-	},
+	"spices": [
+		"paprika", "cayenne pepper", "dried oregano", "dried thyme", "salt", "garlic powder", "ground black pepper", "onion powder", "garlic"
+	],
 	"sauces": [
 		"worcestershire sauce",
-		"hot sauce",
+		"hot sauce"
 	],
 	"meats - red": [
 		"andouille sausage"
@@ -26,17 +16,17 @@
 	"vegetables - texture": [
 		"okra",
 		"celery",
-		"green bell pepper",
+		"green bell pepper"
 	],
 	"vegetables - flavor": [
 		"onion",
-		"tomato",
+		"tomato"
 	],
 	"grains": [
-		"long-grain rice",
+		"long-grain rice"
 	],
 	"bases": [
-		"chicken broth",
+		"chicken broth"
 	],
 	"oils": [
 		"butter"
