@@ -252,7 +252,6 @@ def toHealthy(recipeObj):
 	
 
 def toUnhealthy(recipeObj):
-	f = open("to_unhealthy.json")
 	return ingredTrans(recipeObj, "to_unhealthy.json", "unhealthy")
 
 
