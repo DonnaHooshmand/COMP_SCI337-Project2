@@ -362,7 +362,7 @@ def main():
 
 		## Check URL
 		if soup: 
-			flag = input("If you'd like to transform this recipe please describe your transformation from the following options: '->veg', '->nonVeg', '->healthy', '->halve', '->double'; otherwise type N/A: ")
+			flag = input("If you'd like to transform this recipe please describe your transformation from the following options: '->veg', '->nonVeg', '->healthy', '->unhealthy', '->halve', '->double'; otherwise type N/A: ")
 
 			## get inredients
 			ingredient_list = get_ingredients(soup)
