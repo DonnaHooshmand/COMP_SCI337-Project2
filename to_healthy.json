@@ -2,8 +2,5 @@
   "olive oil": "refined avocado oil",
   "lard": "refined avocado oil",
   "vegetable oil": "refined avocado oil",
-  "brown sugar": "high fructose corn syrup",
-  "white sugar": "high fructose corn syrup",
-  "maple syrup": "high fructose corn syrup",
-  "honey": "high fructose corn syrup"
+  "high fructose corn syrup": "honey"
 }
