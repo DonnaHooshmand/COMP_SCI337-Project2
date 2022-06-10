@@ -1,0 +1,49 @@
+{
+	"spices": [
+		"paprika", "salt", "garlic powder", "dried oregano", "dried thyme", "bay leaves", "ground black pepper", "onion powder", "cayenne pepper", 
+		"ground turmeric", "cumin", "cumin seed", "turmeric", "allspice", "ground allspice", "fresh thyme", "parsley", "fresh oregano", 
+		"ground ginger", "ground cinnamon", "ground coriander", "dried dill", "fresh dill", "lemongrass",
+	],
+	"sauces": [
+		"hoisin sauce", "oyster sauce", "soy sauce", "fish sauce", "lemon juice", "lime juice", "rice vinegar", "gochujang", 
+	],
+	"oils": [
+		"cooking oil", "sesame oil", "peanut oil", "butter", "unsalted butter", "salted butter", "olive oil", "extra virgin olive oil",
+	],
+	"thickeners": [
+		"baking powder", "flour", "corn starch", "eggs", "baking soda", 
+	],
+	"meats - red": [
+		"pork", "ham", "prosciutto", "jamon", "salami", "sausage", "bacon", "pork belly", "pork chops", "porkchops", "ribs", "pork shoulder", "pork tenderloin",
+		"beef", "brisket", "shank", "shortribs", "short ribs", "skirt steak", "steak", "flank steak", "strip steak", "sirloin", "sirloin steak", "tenderloin roast", 
+		"strip roast", "filet mignon", "hanger steak", "beef chuck", "short loin", "flat iron steak", "shoulder tender medallions", "chuck ribs", "chuck short ribs", 
+		"sierra cut", "ribeye steak", "prime rib", "rib satay", "back ribs", "london broil", "stew beef", "ground beef", "cubed steak",
+		"lamb", "mutton", "venison", "boar", "bison", "buffalo"
+	],
+	"meats - white": [
+		"chicken", "turkey", "duck", "goose", "rabbit",
+	],
+	"meats - fish": [
+		"salmon", "tuna", "trout", "halibut", "mackerel", "cod", "catfish", "tilapia", "red snapper", "snapper", "haddock", "flounder", "pollock", 
+		"bass", "swordfish", "pike", "branzino", "mahi-mahi"
+	],
+	"bases": [
+		"condensed milk", "coconut milk", "dry white wine",
+	],
+	"starch": [
+		"tortillas", "corn tortillas", "flour tortillas", "bread", "baguette",
+	],
+	"vegetables - texture": [
+		"okra", "celery", "green bell pepper", "cucumber", "potatoes", "avocado", "black beans", "beans", "pinto beans", 
+		"chickpeas", "beets", "red bell pepper", "beansprouts",
+	],
+	"vegetables - flavor": [
+		"onion", "tomato", "shallots", "green chilies", "scallions", "kimchi", 
+	],
+	"grains": [
+		"long-grain rice", "white rice", "brown rice", "couscous", 
+	],
+	"add ons": [
+		"lime", "feta cheese", "toasted sesame seeds", "sesame seeds", "parmesan", "grated parmesan", "peanuts",
+	]
+}
