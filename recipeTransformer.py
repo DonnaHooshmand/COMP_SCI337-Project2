@@ -15,14 +15,10 @@ class Ingredient:
 		self.quantity = q
 	
 	def pprint(self):
-		print("\n\n~ Printing ingredient ~")
-		print("="*30)
 		print("Base ingredient: ", self.base_ingredient)
-		print("="*30)
 		print("Unit: ", self.unit)
-		print("="*30)
 		print("Quantity: ", self.quantity)
-		print("\n\n")
+		print("")
 
 
 ## recipe object
@@ -156,7 +152,7 @@ def get_methods_and_tools(recipeObj):
 			## but that seems like it might not be great...
 		## 2. (WHAT WE'RE DOING) Use a list and see what is in the directions.
 	## Credit: https://www.cooksmarts.com/cooking-guides/create-a-functional-kitchen/20-must-have-kitchen-tools/
-	tool_list = ['pan', 'wok', 'saucepan', 'pot', 'dish',]
+	tool_list = ['pan', 'wok', 'saucepan', 'pot', 'dish', 'whisk', 'bowl', 'plate', 'skillet',]
 	tools_found = []
 	for i, instruction in enumerate(recipeObj.instructions):
 		for tool in tool_list:
@@ -193,6 +189,8 @@ def halve(recipeObj):
 	newRecipe = copy.deepcopy(recipeObj)
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		newRecipe.ingredients[i].quantity = ingredient.quantity / 2
+
+	#IF METHOD IS BAKE, SCALE COOKING TIME?
 	
 	return newRecipe
 
@@ -202,6 +200,8 @@ def double(recipeObj):
 	newRecipe = copy.deepcopy(recipeObj)
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		newRecipe.ingredients[i].quantity = ingredient.quantity * 2
+
+	#IF METHOD IS BAKE, SCALE COOKING TIME?
 	
 	return newRecipe
 
@@ -213,10 +213,13 @@ def toVeg(recipeObj):
 	print("PRINTING VEGGIE SUBSTITUTIONS PULLED FROM JSON FILE:")
 	print(substitutions)
 	newRecipe = copy.deepcopy(recipeObj)
+
+	subsMade={}
 	# transform ingredients
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		for sub in substitutions.keys():
 			if sub in ingredient.base_ingredient:
+				subsMade[sub] = substitutions[sub]
 				newRecipe.ingredients[i].base_ingredient = ingredient.base_ingredient.replace(sub, substitutions[sub])
 
 	# transform instructions
@@ -224,6 +227,9 @@ def toVeg(recipeObj):
 		for sub in substitutions.keys():
 			if sub in instruction:
 				newRecipe.instructions[i] = instruction.replace(sub, substitutions[sub])
+
+	for sub in subsMade.keys():
+		print(f"As a part of a transformation to vegetarian cuisine, {sub} was substituted with {substitutions[sub]}.")
 		
 	return newRecipe
 
@@ -237,10 +243,13 @@ def toNonVeg(recipeObj):
 	substitutions = {v: k for k, v in substitutions.items()}
 	print(substitutions)
 	newRecipe = copy.deepcopy(recipeObj)
+
+	subsMade = {}
 	# transform ingredients
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		for sub in substitutions.keys():
 			if sub in ingredient.base_ingredient:
+				subsMade[sub] = substitutions[sub]
 				newRecipe.ingredients[i].base_ingredient = ingredient.base_ingredient.replace(sub, substitutions[sub])
 
 	# transform instructions
@@ -249,12 +258,19 @@ def toNonVeg(recipeObj):
 			if sub in instruction:
 				newRecipe.instructions[i] = instruction.replace(sub, substitutions[sub])
 		
+	for sub in subsMade.keys():
+		print(f"As a part of a transformation to non-vegetarian cuisine, {sub} was substituted with {substitutions[sub]}.")
 	return newRecipe
 
 def toHealthy(recipeObj):
 	pass
 
 def toUnhealthy(recipeObj):
+	pass
+
+def toAirFryer(recipeObj):
+	#replace instances of oven with air fryer
+	#scale cooking time, cooking temperature
 	pass
 
 def transform(recipeObj, transformation):
