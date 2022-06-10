@@ -206,16 +206,9 @@ def double(recipeObj):
 	return newRecipe
 
 
-def toVeg(recipeObj):
-	f = open("veggieSubs.json")
-	substitutions = json.load(f)
-	f.close()
-	print("PRINTING VEGGIE SUBSTITUTIONS PULLED FROM JSON FILE:")
-	print(substitutions)
-	newRecipe = copy.deepcopy(recipeObj)
-
+def ingredient_subs(substitutions, newRecipe):
 	subsMade={}
-	# transform ingredients
+
 	for i, ingredient in enumerate(newRecipe.ingredients):
 		for sub in substitutions.keys():
 			if sub in ingredient.base_ingredient:
@@ -227,46 +220,41 @@ def toVeg(recipeObj):
 		for sub in substitutions.keys():
 			if sub in instruction:
 				newRecipe.instructions[i] = instruction.replace(sub, substitutions[sub])
+	
+	return subsMade
+
+
+
+def ingredTrans(recipeObj, json_file, trans_type):
+	f = open(json_file)
+	substitutions = json.load(f)
+	f.close()
+	print(f"PRINTING {trans_type.upper()} SUBSTITUTIONS PULLED FROM JSON FILE:")
+	print(substitutions)
+	newRecipe = copy.deepcopy(recipeObj)
+
+	subsMade = ingredient_subs(substitutions, newRecipe)
 
 	for sub in subsMade.keys():
-		print(f"As a part of a transformation to vegetarian cuisine, {sub} was substituted with {substitutions[sub]}.")
+		print(f"As a part of a transformation to {trans_type.lower()} cuisine, {sub} was substituted with {substitutions[sub]}.")
 		
 	return newRecipe
+
+
+def toVeg(recipeObj):
+	return ingredTrans(recipeObj, "veggieSubs.json", "vegetarian")
 
 def toNonVeg(recipeObj):
-	f = open("veggieSubs.json")
-	substitutions = json.load(f)
-	f.close()
-	print("PRINTING VEGGIE SUBSTITUTIONS PULLED FROM JSON FILE:")
-	print(substitutions)
-	print("REVERSING SUBSTITUTIONS")
-	substitutions = {v: k for k, v in substitutions.items()}
-	print(substitutions)
-	newRecipe = copy.deepcopy(recipeObj)
-
-	subsMade = {}
-	# transform ingredients
-	for i, ingredient in enumerate(newRecipe.ingredients):
-		for sub in substitutions.keys():
-			if sub in ingredient.base_ingredient:
-				subsMade[sub] = substitutions[sub]
-				newRecipe.ingredients[i].base_ingredient = ingredient.base_ingredient.replace(sub, substitutions[sub])
-
-	# transform instructions
-	for i, instruction in enumerate(newRecipe.instructions):
-		for sub in substitutions.keys():
-			if sub in instruction:
-				newRecipe.instructions[i] = instruction.replace(sub, substitutions[sub])
-		
-	for sub in subsMade.keys():
-		print(f"As a part of a transformation to non-vegetarian cuisine, {sub} was substituted with {substitutions[sub]}.")
-	return newRecipe
+	return ingredTrans(recipeObj, "meatSubs.json", "carnivorous")
 
 def toHealthy(recipeObj):
-	pass
+	return ingredTrans(recipeObj, "to_healthy.json", "healthy")
+	
 
 def toUnhealthy(recipeObj):
-	pass
+	f = open("to_unhealthy.json")
+	return ingredTrans(recipeObj, "to_unhealthy.json", "unhealthy")
+
 
 def toAirFryer(recipeObj):
 	#replace instances of oven with air fryer
