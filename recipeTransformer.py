@@ -3,6 +3,7 @@ import requests
 from bs4 import BeautifulSoup
 import json
 import copy
+import math
 
 class Ingredient:
     base_ingredient = "None"
@@ -254,11 +255,76 @@ def toHealthy(recipeObj):
 def toUnhealthy(recipeObj):
     return ingredTrans(recipeObj, "to_unhealthy.json", "unhealthy")
 
-
 def toAirFryer(recipeObj):
-    #replace instances of oven with air fryer
-    #scale cooking time, cooking temperature
-    pass
+	print("transforming this recipe to work with an air fyer instead of an oven.")
+	newRecipe = copy.deepcopy(recipeObj)
+
+	backupInstructions = []
+	heatF = 0
+	#find where instructions mention the oven
+	for ix, instruction in enumerate(newRecipe.instructions):
+		print(newRecipe.instructions[ix])
+		print(instruction)
+		instruction = instruction.replace("oven", "air fryer")
+		instruction = instruction.replace("Oven", "Air fryer")
+		print(newRecipe.instructions[ix])
+		print(instruction)
+		if "preheat" in instruction.lower():
+			heat = int(re.findall(r'\d\d\d degrees F', instruction)[0][:3])
+			# print(heat)
+			heat = heat - 25
+			# print(re.sub(r'\d\d\d degrees F', str(heat) + ' degrees F', instruction))
+			instruction = re.sub(r'\d\d\d degrees F', str(heat) + ' degrees F', instruction)
+			heat = math.floor((heat - 32) * 5 / 9)
+			# print("C HEAT ", heat)
+			# print(re.sub(r'\d\d\d degrees C', str(heat) + ' degrees C', instruction))
+			instruction = re.sub(r'\d\d\d degrees C', str(heat) + ' degrees C', instruction)
+		y = re.findall(r'(\d+ to \d+ minutes)|(\d+ minutes)|(\d+ hours)', instruction)
+		if y:
+			# print(y)
+			matches = []
+			for i in y:
+				for j in i:
+					if j:
+						matches.append(j)
+			# print('matches, ',matches)
+
+			times = [re.findall(r'\d+', time) for time in matches]
+			# print(times)
+			timesList = []
+			for time in times:
+				for t in time:
+					timesList.append(t)
+			# print(timesList)
+			timeSubs = {}
+			for t in timesList:
+				timeSubs[t] = str(int(int(t)*4/5))
+			# print(timeSubs)
+
+			for sub in timeSubs.keys():
+				print("replacing", sub, "with" ,timeSubs[sub])
+				instruction = instruction.replace(" "+sub+" ", " "+timeSubs[sub]+" ")
+			# print("scaled cooking time")
+		newRecipe.instructions[ix] = instruction
+		backupInstructions.append(instruction)
+	# for inst in newRecipe.instructions:
+	# 	print(inst)
+
+	print("Printing cooking time for total recipe")
+	# print(newRecipe.cookTime)
+	hours = int(newRecipe.cookTime[4:newRecipe.cookTime.find("H")])
+	mins = int(newRecipe.cookTime[newRecipe.cookTime.find("H")+1:newRecipe.cookTime.find("M")])
+	totalMins = mins+hours*60
+	scaledMins = totalMins*4/5
+	difference = totalMins - scaledMins
+	newRecipe.cookTime = "P0DT"+str(math.floor(scaledMins/60))+"H"+str(scaledMins%60)
+	differenceH = math.floor(difference/60)
+	differenceM = difference%60
+	print(f"Using an air fryer has shaved {str(differenceH)} hours and {str(differenceM)} minutes off of cook time.")
+	print("New cook time for recipe:  ", newRecipe.cookTime)
+	#replace instances of oven with air fryer
+	#scale cooking time, cooking temperature
+	return newRecipe
 
 def recipeToCajun(recipe):
     with open('cuisineIngredientTargets.json', encoding='utf-8') as f:
@@ -359,6 +425,10 @@ def transform(recipeObj, transformation):
         return halve(recipeObj)
     elif transformation == "->double":
         return double(recipeObj)
+    elif transformation == "->airFryer":
+        return toAirFryer(recipeObj)
+    elif transformation == "->cajun":
+        return recipeToCajun(recipeObj)
 
 def get_recipe_json(soup_blob):
     recipe_chunk = json.loads(soup_blob.find("script", type="application/ld+json").text)[1]
@@ -416,6 +486,7 @@ def main():
         else:
             raise ValueError("URL not correct. Please try again.")
 
+        input("Ready for next experiment?")
         print("Transforming vegetarian pad thai to meat pad thai:")
         url = "https://www.allrecipes.com/recipe/244716/shirataki-meatless-meat-pad-thai/"
         get_req = requests.get(url)
@@ -438,6 +509,7 @@ def main():
         else:
             raise ValueError("URL not correct. Please try again.")
 
+        input("Ready for next experiment?")
         print("Transforming Mexican rice to Cajun Creole rice:")
         url = "https://www.allrecipes.com/recipe/73303/mexican-rice-iii/"
         get_req = requests.get(url)
@@ -454,6 +526,28 @@ def main():
             print("Recipe transformed to Cajun, printing revised copy:")
             cajunRice.pprint()
 
+        input("Ready for next experiment?")
+        print("Transforming Oven tiramisu to air fryer tiramisu:")
+        url = "https://www.allrecipes.com/recipe/7757/tiramisu-cheesecake/"
+        get_req = requests.get(url)
+        soup = BeautifulSoup(get_req.content, 'html.parser')
+
+        ## Check URL
+        if soup:
+
+            jsonRecipe = get_recipe_json(soup)
+            tiramisu = recipeFromJson(jsonRecipe, soup)
+            get_methods_and_tools(tiramisu)
+            print("Created recipe object successfully. Printing now:")
+            tiramisu.pprint()
+
+            transformedTiramisu = transform(tiramisu, "->airFryer")
+            get_methods_and_tools(transformedTiramisu)
+            print("Recipe transformed, printing revised copy:")
+            transformedTiramisu.pprint()
+
+        else:
+            raise ValueError("URL not correct. Please try again.")
 
         print("demo has concluded")
 
